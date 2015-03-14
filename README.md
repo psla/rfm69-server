@@ -1,3 +1,6 @@
+This repository contains my modifications to https://github.com/etrombly/RFM69
+Use that one instead.
+
 This is a port of the RFM69 library for arduino from https://github.com/LowPowerLab/RFM69 to python for raspberry pi.
 Attach the RFM69 as follows:  
 RFM pin - Pi pin  
