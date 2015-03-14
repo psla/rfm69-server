@@ -6,7 +6,7 @@ import RPi.GPIO as GPIO
 import datetime
 
 class RFM69():
-    def __init__(self, freqBand, nodeID, networkID, isRFM69HW = False, intPin = 18):
+    def __init__(self, freqBand, nodeID, networkID, isRFM69HW = False, intPin = 12):
 
         self.freqBand = freqBand
         self.address = nodeID
@@ -90,7 +90,7 @@ class RFM69():
         }
         #initialize SPI
         self.spi = spidev.SpiDev()
-        self.spi.open(0, 0)
+        self.spi.open(0, 1)
         self.spi.max_speed_hz = 4000000
 
         #verify chip is syncing?
@@ -238,6 +238,7 @@ class RFM69():
         self.setMode(RF69_MODE_STANDBY)
 
     def interruptHandler(self, pin):
+	print "interrupt"
         if self.mode == RF69_MODE_TX:
             self.DATASENT = True
             return
