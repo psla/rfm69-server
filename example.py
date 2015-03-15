@@ -4,7 +4,8 @@ import RFM69
 from RFM69registers import *
 import datetime
 import time
-from struct import *
+import struct
+#from struct import *
 
 print "pre-initialized"
 test = RFM69.RFM69(RF69_915MHZ, 1, 100, isRFM69HW = True, intPin = 12)
@@ -34,7 +35,15 @@ while True:
     while not test.receiveDone():
         time.sleep(.1)
     print "%s from %s RSSI:%s" % ("".join([chr(letter) for letter in test.DATA]), test.SENDERID, test.RSSI)
+    print "Printing bytes: "
     print test.DATA
+    
+    if test.DATA[0] == 3:
+	print "DHT 22 temperature info from node 3"
+	ba = bytearray(test.DATA[1:])
+	(temperature, humidity) = struct.unpack("hh", buffer(ba))
+	print temperature / 10.0
+	print humidity / 10.0
     
     if test.ACKRequested():
 	print "sending ACK"
