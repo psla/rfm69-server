@@ -7,6 +7,8 @@ import time
 import struct
 #from struct import *
 
+import requests
+
 print "pre-initialized"
 test = RFM69.RFM69(RF69_915MHZ, 1, 100, isRFM69HW = True, intPin = 12)
 print "class initialized"
@@ -17,7 +19,7 @@ for result in results:
 print "Performing rcCalibration"
 test.rcCalibration()
 print "setting high power"
-test.setHighPower(False)
+test.setHighPower(True)
 print "Checking temperature"
 print test.readTemperature(0)
 print "setting encryption"
@@ -34,7 +36,8 @@ while True:
     print test.DATALEN
     while not test.receiveDone():
         time.sleep(.1)
-    print "%s from %s RSSI:%s" % ("".join([chr(letter) for letter in test.DATA]), test.SENDERID, test.RSSI)
+    print datetime.datetime.now()
+    print "From %s RSSI:%s" % (test.SENDERID, test.RSSI)
     print "Printing bytes: "
     print test.DATA
     
@@ -42,8 +45,15 @@ while True:
 	print "DHT 22 temperature info from node 3"
 	ba = bytearray(test.DATA[1:])
 	(temperature, humidity) = struct.unpack("hh", buffer(ba))
-	print temperature / 10.0
-	print humidity / 10.0
+	temp = temperature / 10.0
+	humi = humidity / 10.0
+	
+	payload = { 'room_number': '3', 'temperature': temp }
+	r = requests.post("https://usa.sepio.pl/~piotr/homeautomation/log.php", data=payload)
+	payload = { 'room_number': '4', 'temperature': humi }
+	r = requests.post("https://usa.sepio.pl/~piotr/homeautomation/log.php", data=payload)
+
+	print "Reported temp and humidity from node 3."
     
     if test.ACKRequested():
 	print "sending ACK"

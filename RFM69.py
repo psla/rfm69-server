@@ -238,7 +238,6 @@ class RFM69():
         self.setMode(RF69_MODE_STANDBY)
 
     def interruptHandler(self, pin):
-	print "interrupt"
         if self.mode == RF69_MODE_TX:
             self.DATASENT = True
             return
