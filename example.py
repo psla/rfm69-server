@@ -40,7 +40,12 @@ while True:
     print "From %s RSSI:%s" % (test.SENDERID, test.RSSI)
     print "Printing bytes: "
     print test.DATA
+
+    if test.ACKRequested():
+	print "sending ACK"
+        test.sendACK()
     
+    # consume remainder of the data (drop to queue?)
     if test.DATA[0] == 3:
 	print "DHT 22 temperature info from node 3"
 	ba = bytearray(test.DATA[1:])
@@ -55,8 +60,5 @@ while True:
 
 	print "Reported temp and humidity from node 3."
     
-    if test.ACKRequested():
-	print "sending ACK"
-        test.sendACK()
 print "shutting down"
 test.shutdown()
