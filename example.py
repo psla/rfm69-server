@@ -36,10 +36,7 @@ while True:
     print test.DATALEN
     while not test.receiveDone():
         time.sleep(.1)
-    print datetime.datetime.now()
-    print "From %s RSSI:%s" % (test.SENDERID, test.RSSI)
-    print "Printing bytes: "
-    print test.DATA
+    print "On %s from %s RSSI:%s" % (datetime.datetime.now(), test.SENDERID, test.RSSI)
 
     if test.ACKRequested():
 	print "sending ACK"
@@ -48,19 +45,26 @@ while True:
     try:
         # consume remainder of the data (drop to queue?)
         if test.DATA[0] == 3:
-            print "DHT 22 temperature info from node 3"
+            # DHT 22 temperature info from node 3
             ba = bytearray(test.DATA[1:])
+            # this may fail with exception if incorrect data was received -
+            # add some kind of parity check unless RFM is already doing that..
             (temperature, humidity) = struct.unpack("hh", buffer(ba))
             temp = temperature / 10.0
             humi = humidity / 10.0
             
+            # these can fail for various reasons (server not responding, etc.)
+            # consider retry logic - keep in mind that it will block other messages from being received
             payload = { 'room_number': '3', 'temperature': temp }
             r = requests.post("https://usa.sepio.pl/~piotr/homeautomation/log.php", data=payload)
             payload = { 'room_number': '4', 'temperature': humi }
             r = requests.post("https://usa.sepio.pl/~piotr/homeautomation/log.php", data=payload)
     	    print "Reported temp and humidity from node 3."
-    except:
-        pass
+    except Exception, err:
+        print "From %s RSSI:%s" % (test.SENDERID, test.RSSI)
+        print "Message that caused exception:"
+        print test.DATA
+        print traceback.format_exc()
     
 print "shutting down"
 test.shutdown()
