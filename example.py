@@ -47,16 +47,20 @@ while True:
     
     # consume remainder of the data (drop to queue?)
     if test.DATA[0] == 3:
-	print "DHT 22 temperature info from node 3"
-	ba = bytearray(test.DATA[1:])
-	(temperature, humidity) = struct.unpack("hh", buffer(ba))
-	temp = temperature / 10.0
-	humi = humidity / 10.0
+        print "DHT 22 temperature info from node 3"
+        ba = bytearray(test.DATA[1:])
+        (temperature, humidity) = struct.unpack("hh", buffer(ba))
+        temp = temperature / 10.0
+        humi = humidity / 10.0
 	
-	payload = { 'room_number': '3', 'temperature': temp }
-	r = requests.post("https://usa.sepio.pl/~piotr/homeautomation/log.php", data=payload)
-	payload = { 'room_number': '4', 'temperature': humi }
-	r = requests.post("https://usa.sepio.pl/~piotr/homeautomation/log.php", data=payload)
+	try:
+	    payload = { 'room_number': '3', 'temperature': temp }
+	    r = requests.post("https://usa.sepio.pl/~piotr/homeautomation/log.php", data=payload)
+	    payload = { 'room_number': '4', 'temperature': humi }
+	    r = requests.post("https://usa.sepio.pl/~piotr/homeautomation/log.php", data=payload)
+        except:
+            pass
+	
 
 	print "Reported temp and humidity from node 3."
     
