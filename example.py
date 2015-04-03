@@ -59,12 +59,10 @@ while True:
             r = requests.post("https://usa.sepio.pl/~piotr/homeautomation/log.php", data=payload)
             payload = { 'room_number': '4', 'temperature': humi }
             r = requests.post("https://usa.sepio.pl/~piotr/homeautomation/log.php", data=payload)
-    	    print "Reported temp and humidity from node 3."
     except Exception, err:
         print "From %s RSSI:%s" % (test.SENDERID, test.RSSI)
         print "Message that caused exception:"
         print test.DATA
-        print traceback.format_exc()
     
 print "shutting down"
 test.shutdown()
