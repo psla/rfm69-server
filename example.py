@@ -5,6 +5,7 @@ from RFM69registers import *
 import datetime
 import time
 import struct
+import traceback
 #from struct import *
 
 import requests
@@ -63,6 +64,7 @@ while True:
         print "From %s RSSI:%s" % (test.SENDERID, test.RSSI)
         print "Message that caused exception:"
         print test.DATA
+        traceback.print_exc()
     
 print "shutting down"
 test.shutdown()
