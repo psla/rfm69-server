@@ -53,6 +53,11 @@ while True:
             (temperature, humidity) = struct.unpack("hh", buffer(ba))
             temp = temperature / 10.0
             humi = humidity / 10.0
+
+            checksum = sum(test.DATA[0:5]) % 256
+            if checksum != test.DATA[5]:
+                # TODO, in future we want to log them straight to the server, along with the request
+                raise ValueError('Checksum did not match', test.DATA)
             
             # these can fail for various reasons (server not responding, etc.)
             # consider retry logic - keep in mind that it will block other messages from being received
