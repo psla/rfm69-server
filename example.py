@@ -47,7 +47,7 @@ while True:
         # consume remainder of the data (drop to queue?)
         if test.DATA[0] == 3:
             # DHT 22 temperature info from node 3
-            ba = bytearray(test.DATA[1:])
+            ba = bytearray(test.DATA[1:5])
             # this may fail with exception if incorrect data was received -
             # add some kind of parity check unless RFM is already doing that..
             (temperature, humidity) = struct.unpack("hh", buffer(ba))
