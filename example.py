@@ -36,7 +36,7 @@ while True:
     test.receiveBegin()
     print test.DATALEN
     while not test.receiveDone():
-        time.sleep(.1)
+        time.sleep(.005)
     print "On %s from %s RSSI:%s" % (datetime.datetime.now(), test.SENDERID, test.RSSI)
 
     if test.ACKRequested():
@@ -45,7 +45,7 @@ while True:
     
     try:
         # consume remainder of the data (drop to queue?)
-        if test.DATA[0] == 3:
+        if test.DATA[0] == 3 or test.DATA[0] == 2:
             # DHT 22 temperature info from node 3
             ba = bytearray(test.DATA[1:5])
             # this may fail with exception if incorrect data was received -
@@ -61,9 +61,10 @@ while True:
             
             # these can fail for various reasons (server not responding, etc.)
             # consider retry logic - keep in mind that it will block other messages from being received
-            payload = { 'room_number': '3', 'temperature': temp }
+            payload = { 'room_number': test.DATA[0], 'temperature': temp }
             r = requests.post("https://usa.sepio.pl/~piotr/homeautomation/log.php", data=payload)
-            payload = { 'room_number': '4', 'temperature': humi }
+            # room_number 4 for node 3, 5 for node 2
+            payload = { 'room_number': 7 - test.DATA[0], 'temperature': humi }
             r = requests.post("https://usa.sepio.pl/~piotr/homeautomation/log.php", data=payload)
     except Exception, err:
         print "From %s RSSI:%s" % (test.SENDERID, test.RSSI)
