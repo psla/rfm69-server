@@ -62,10 +62,10 @@ while True:
             # these can fail for various reasons (server not responding, etc.)
             # consider retry logic - keep in mind that it will block other messages from being received
             payload = { 'room_number': test.DATA[0], 'temperature': temp }
-            r = requests.post("https://usa.sepio.pl/~piotr/homeautomation/log.php", data=payload)
+            r = requests.post("https://usa.sepio.pl/~piotr/homeautomation/log.php", data=payload, verify=False)
             # room_number 4 for node 3, 5 for node 2
             payload = { 'room_number': 7 - test.DATA[0], 'temperature': humi }
-            r = requests.post("https://usa.sepio.pl/~piotr/homeautomation/log.php", data=payload)
+            r = requests.post("https://usa.sepio.pl/~piotr/homeautomation/log.php", data=payload, verify=False)
     except Exception, err:
         print "From %s RSSI:%s" % (test.SENDERID, test.RSSI)
         print "Message that caused exception:"
