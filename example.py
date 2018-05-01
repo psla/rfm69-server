@@ -59,6 +59,7 @@ while True:
                 # TODO, in future we want to log them straight to the server, along with the request
                 raise ValueError('Checksum did not match', test.DATA)
             
+            #print test.DATA
             # these can fail for various reasons (server not responding, etc.)
             # consider retry logic - keep in mind that it will block other messages from being received
             payload = { 'room_number': test.DATA[0], 'temperature': temp }
